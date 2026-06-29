@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+    {% include 'style.html' %}
+</head>
+<body class="container">
+<h1 class="text-center">State-wise Elections</h1>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th scope="col">id</th>
+        <th scope="col">Constituency Name</th>
+        <th scope="col">Population</th>
+        <th scope="col">State Name</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for c in constituency %}
+    <tr>
+        <th scope="row">{{ c.id }}</th>
+        <td>{{ c.name }}</td>
+        <td>{{ c.population }}</td>
+        <td> <a href="/details/{{ c.state_id }}">{{ c.state.name }}</a> </td>
+    </tr>
+    {% endfor %}
+
+    </tbody>
+</table>
+{#<div class="row align-content-center ">#}
+{#    <div class="col-4 outline-custom">#}
+{#        <h2 class="text-center">States</h2>#}
+{#        {% for state in states %}#}
+{#            {{ state.name }} <br/>#}
+{#        {% endfor %}#}
+{#    </div>#}
+{#    <div class="col-8 outline-custom">#}
+{#        <h2 class="text-center">Constituency wise elections</h2>#}
+{#        {% for c in constituency %}#}
+{#            {{ c.name }} <br/>#}
+{#        {% endfor %}#}
+{#    </div>#}
+{#    <div class="col-3">#}
+{#        <h2 class="text-center">Div1</h2>#}
+{##}
+{#    </div>#}
+
+</div>
+</body>
+</html>

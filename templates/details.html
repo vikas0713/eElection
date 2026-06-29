@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Details of {{ state.name }}</title>
+    {% include 'style.html' %}
+</head>
+<body>
+<div class="container">
+
+    <div class="row">
+        Name: {{ state.name }} <br/>
+        Description: {{ state.description }} <br/>
+        Constituency: {% for c in state.constituencies.all %} {{ c.name }}, {% endfor %}
+    </div>
+</div>
+</body>
+</html>

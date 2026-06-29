@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Cast Your Vote</title>
+    {% include 'style.html' %}
+</head>
+<body>
+<div class="container">
+<h2 class="text-center">Election {{ election.start_session | date }}</h2>
+    <form class="form-inline" method="GET" action="{% url 'validate_identity' election.id %}">
+    <br/>
+        {% if error %}
+            <div class="alert alert-danger" role="alert">
+                {{ error }}
+            </div>
+        {% endif %}
+        <div class="form-group mx-sm-3 mb-2">
+            <label for="inputPassword2" class="sr-only">Enter Your Aadhaar</label>
+            <input name="aadhaar" class="form-control" id="inputPassword2" placeholder="Enter your Aadhaar Number">
+        </div>
+        <button type="submit" class="btn btn-primary mb-2" >Confirm identity</button>
+    </form>
+</div>
+
+</body>
+</html>
