@@ -1,8 +1,9 @@
+from django.db.models import Sum
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 
-from election.models import States, Constituency, Election, Candidate
-from election.utils import Voter
+from election.models import States, Constituency, Election, Candidate, Voters, Vote
+from election.utils import Voter, CastVote
 
 
 def dashboard(request):
@@ -46,7 +47,32 @@ def validate_identity(request, election_id):
         "cast_vote.html"
         ,{
             "election": Election.objects.get(id=election_id),
-            "candidates": Candidate.objects.filter(election=election_id)
+            "candidates": Candidate.objects.filter(election=election_id),
+            "aadhaar": request.GET.get("aadhaar"),
+        }
+    )
+
+
+def cast_vote(request):
+    voter = Voters.objects.get(aadhaar=request.POST.get("aadhaar"))
+    election_id = request.POST.get("election_id")
+    cast_vote = CastVote(
+        election_id, voter.id, request.POST.get("candidate_id")
+    )
+    result = cast_vote.save_vote()
+    if result:
+        message = "Casted vote successfully"
+    else:
+        message = "Casted vote failed"
+    return render(
+        request,
+        "cast_vote.html",
+        context={
+            "message": message,
+            "result": True,
+            "election_results": Vote.objects.filter(election=election_id).aggregate(
+                Sum("votes")
+            ),
         }
     )
 

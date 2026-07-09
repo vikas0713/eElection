@@ -26,6 +26,7 @@ urlpatterns = [
     path("details/<int:state_id>", election_views.state_details, name="state_details"),
     path("confirm-identity/<int:election_id>", election_views.confirm_identity, name="confirm_identity"),
     path("validate-identity/<int:election_id>", election_views.validate_identity, name="validate_identity"),
+    path("cast-vote/", election_views.cast_vote, name="cast_vote"),
 
 
 ]

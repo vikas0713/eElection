@@ -5,23 +5,22 @@ from election.models import Election, Candidate, Voters, Constituency, Vote
 
 class CastVote:
 
-    def __init__(self, election_id, voter_id, candidate_id, constituency_id):
+    def __init__(self, election_id, voter_id, candidate_id):
         self.voter_id = voter_id
         self.candidate_id = candidate_id
-        self.constituency_id = constituency_id
         self.election_id = election_id
 
     def get_election(self):
-        return Election.objects.get(election_id=self.election_id)
+        return Election.objects.get(id=self.election_id)
 
     def get_candidate(self):
-        return Candidate.objects.get(candidate_id=self.candidate_id,election_id=self.election_id)
+        return Candidate.objects.get(id=self.candidate_id,election_id=self.election_id)
 
     def get_voter(self):
-        return Voters.objects.get(voter_id=self.voter_id)
+        return Voters.objects.get(id=self.voter_id)
 
     def get_constituency(self):
-        return Constituency.objects.get(constituency_id=self.constituency_id)
+        return self.get_candidate().constituency
 
     def validate_election(self):
         election = self.get_election()
@@ -37,6 +36,16 @@ class CastVote:
             return False
         return True
 
+    def is_already_voted(self):
+        if Vote.objects.filter(
+                election_id=self.election_id,
+                casted_to_id=self.candidate_id,
+                casted_by_id=self.voter_id
+        ).exists():
+            return True
+        return False
+
+
     def save_vote(self):
         # validating election
         if not self.validate_election():
@@ -45,11 +54,13 @@ class CastVote:
         if not self.match_candidate_constituency():
             return False
         # save vote at last
+        if self.is_already_voted():
+            return False
         time_now = datetime.datetime.now(tz=datetime.timezone.utc)
         vote_obj = Vote(
             election_id=self.election_id,
             casted_by_id=self.voter_id,
-            candidate_id=self.candidate_id,
+            casted_to_id=self.candidate_id,
             casted_at=time_now,
         )
         vote_obj.save()

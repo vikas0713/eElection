@@ -3,8 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <title>Cast Vote</title>
+    {% include 'style.html' %}
 </head>
 <body>
-<h1>{{ election }}</h1>
+<h1 class="text-center">Election {{ election }}</h1>
+
+<br>
+<div class="container">
+{% if result %}
+<h2 class="text-center">{{ message }}</h2>
+{% else %}
+    {% for c in candidates %}
+        <form action="{% url 'cast_vote' %}" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="election_id" value="{{ election.id }}">
+        <input type="hidden" name="candidate_id" value="{{ c.id }}">
+        <input type="hidden" name="aadhaar" value="{{ aadhaar }}">
+            <div class="card">
+                <div class="card-header">
+                    Featured
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">{{ c.name}}</h5>
+                    <p class="card-text">{{ c.constituency.name }}</p>
+                    <button type="submit" class="btn btn-primary">{{ c.symbol.name }}</button>
+                </div>
+            </div>
+        </form>
+        <br>
+    {% endfor %}
+{% endif %}
+</div>
 </body>
+
+
 </html>
